@@ -30,18 +30,46 @@ fastify.get('/products/:id', async (request, reply) => {
         }
 });
 
-fastify.put('/products/:id', async (request, reply) => {
-        const id = parseInt(request.params.id, 10);
-        if (!request.body.name || !request.body.price) {
-                reply.code(400).send('Product must have a name and a price')
-        } else {
-                items.push({
-                        id: id,
-                        name: request.body.name,
-                        price: request.body.price
-                });
-                return reply.code(201).send(`Product ${request.body.name} has been created`);
+
+// Add a new product
+
+fastify.post('/products/add', (request, reply) => {
+        const newProduct = {
+                id: request.body.id,
+                name: request.body.name,
+                price: request.body.price
         }
+        products.push(newProduct)
+        reply.status(201).json(newProduct)
+})
+
+// Delete the product
+
+fastify.delete('/products/delete/:id', (request, reply) => {
+        const id = Number(request.params.id)
+        const index = products.findIndex(product => product.id === id)
+        if (index === -1) {
+                return reply.status(404).send('Product not found')
+        }
+        products.splice(index, 1)
+        reply.status(200).json('Product deleted')
+})
+
+// Update product
+
+fastify.put('/products/:id', (request, reply) => {
+        const id = Number(request.params.id)
+        const index = products.findIndex(product => product.id === id)
+        if (index === -1) {
+                return reply.status(404).send('Product not found')
+        }
+        const updatedProduct = {
+                id: products[index].id,
+                name: request.body.name,
+                price: request.body.price
+        }
+        products[index] = updatedProduct
+        reply.status(200).json('Product updated')
 })
 
 // Run the server!

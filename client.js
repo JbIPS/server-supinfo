@@ -9,7 +9,8 @@ async function start() {
                 price: 2
         });
         console.log(putResult.status, putResult.statusText, putResult.data);
+        const addResult = await axios.get('http://localhost:3000/products/add');
+        console.log(addResult.status, addResult.statusText, addResult.data);
 }
-
 start();
 
