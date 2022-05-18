@@ -1,5 +1,9 @@
 const axios = require('axios').default;
 
+fastify.put('products/:id', async (Request, reply) => {
+
+})
+
 async function start() {
         const result = await axios.get('http://localhost:3000/products');
         console.log(result.data);
