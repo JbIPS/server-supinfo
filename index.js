@@ -31,15 +31,14 @@ fastify.get('/products/:id', async (request, reply) => {
 
 fastify.put('/products/:id', async (request, reply) => {
         const id = parseInt(request.params.id, 10);
-        const desiredItem = items.find((item) => item.id === id);
         const indexItem = items.findIndex((item) => item.id === id);
 
         if (!request.body.name || !request.body.price) {
                 reply.code(400).send('Product must have a name and a price')
         } else {
-                if (desiredItem) {
+                if (indexItem !== -1) {
                         items[indexItem] = {id: id, name: request.body.name, price: request.body.price}
-                        return reply.code(201).send(`Product ${request.body.name} has been updated`);
+                        return reply.code(200).send(`Product ${request.body.name} has been updated`);
 
                 } else {
                         items.push({
@@ -53,39 +52,35 @@ fastify.put('/products/:id', async (request, reply) => {
         }
 })
 
-fastify.put('/products/add', async (request, reply) => {
+fastify.post('/products/add', async (request, reply) => {
 
         if (!request.body.name || !request.body.price) {
                 reply.code(400).send('Product must have a name and a price');
         } else {
-                idToAdd = Math.max(...items.map(o => o.id));
-                idToAdd +=1;
-                console.log("vehiufzenofehziuonezhiuez")
+                const idToAdd = Math.max(...items.map(o => o.id)) + 1;
                 items.push({
                         id: idToAdd,
                         name: request.body.name,
                         price: request.body.price
                 });
-                return reply.code(201).send(`Product ${request.body.name} has been created and the id wanted id  ${idToAdd}`);
+                return reply.code(201).send(`Product ${request.body.name} has been created and the id wanted is  ${idToAdd}`);
         }
 })
 
-fastify.delete('/products/delete/:id', async (request, reply) => {
+fastify.delete('/products/:id', async (request, reply) => {
         const id = parseInt(request.params.id, 10);
-        const desiredItem = items.find((item) => item.id === id);
         const indexItem = items.findIndex((item) => item.id === id);
 
-        if (desiredItem) {
+        if (indexItem !== -1) {
                 items.splice(indexItem,1)
-                return reply.code(201).send(`Product that had for id:${id} has been deleted`);
+                return reply.code(204);
         } else {
                 reply.code(404).send('id not found');
         }
 })
 
-fastify.patch('/products/patch/:id', async (request, reply) => {
+fastify.patch('/products/:id', async (request, reply) => {
         const id = parseInt(request.params.id, 10);
-        const desiredItem = items.find((item) => item.id === id);
         const indexItem = items.findIndex((item) => item.id === id);
 
         if (!request.body.price) {
