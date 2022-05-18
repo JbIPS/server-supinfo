@@ -11,7 +11,20 @@ const items = [
   },
 ];
 
-fastify.register(authPlugin);
+const users = [
+	{
+		mail: 'emeric',
+		password: 'superP4ss'
+	},
+	{
+		mail: 'solo',
+		password: 'soloP4ss'
+	}
+];
+
+fastify.register(authPlugin, {
+	users: users
+});
 
 fastify.register(rateLimit, {
 	max: 10,
@@ -110,7 +123,7 @@ fastify.patch("/products/:id", async (request, reply) => {
 fastify.delete("/products/:id", async (request, reply) => {
 	const id = parseInt(request.params.id, 10);
 	const itemToRemoveKey = items.findIndex((item) => item.id === id);
-	
+
 	if(itemToRemoveKey != -1){
 		items.splice(itemToRemoveKey, 1);
 		return reply
