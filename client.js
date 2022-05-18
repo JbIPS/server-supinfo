@@ -4,7 +4,7 @@ async function start() {
         const result = await axios.get('http://localhost:3000/products');
         console.log(result.data);
 
-        const putResult = await axios.put('http://localhost:3000/products/2', {
+        const putResult = await axios.put('http://localhost:3000/products/3', {
                 name: 'Règle',
                 price: 2
         });
