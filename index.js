@@ -59,7 +59,7 @@ fastify.put('/products/:id', async (request, reply) => {
 //- - [] Créer une route permettant de rajouter des produits sans donner d'ID (lui en attribuer un  sur le serveur)
 //
 
-fastify.put('/products/add', async (request, reply) => {
+fastify.post('/products/add', async (request, reply) => {
 
         if (!request.body.name || !request.body.price) {
                 reply.code(400).send('Product must have a name and a price');
