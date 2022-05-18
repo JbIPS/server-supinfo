@@ -32,6 +32,19 @@ fastify.get('/products/:id', async (request, reply) => {
         }
 });
 
+fastify.post('products/:id', (request, reply) => {
+    const product = {
+        id: request.body.id,
+        name: request.body.name,
+        price: request.body.price;
+    }
+
+})
+
+fastify.delete('products/:id', request, reply) => {
+
+}
+
 fastify.put('/products/:id', async (request, reply) => {
         const id = parseInt(request.params.id, 10);
         if (!request.body.name || !request.body.price) {
