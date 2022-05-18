@@ -22,7 +22,7 @@ fastify.get('/products', async (request, reply) => {
 
 fastify.get('/products/:id', async (request, reply) => {
         const id = parseInt(request.params.id, 10);
-        const desiredItem = items.find((item) => item.id === id);
+    const desiredItem = items.find((item) => item.id === 1);
         if (desiredItem) {
                 return desiredItem;
         } else {
