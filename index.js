@@ -11,7 +11,7 @@ const items = [
 ];
 
 fastify.register(rateLimit, {
-	max: 1,
+	max: 10,
 	timeWindow: '1 minute'
 });
 
@@ -32,7 +32,26 @@ fastify.get("/", async (request, reply) => {
 });
 
 fastify.get("/products", async (request, reply) => {
-  return items;
+	const authRaw = request.headers.authorization;
+	
+	if (authRaw) {
+		const encodedAuth = authRaw.split(' ').pop();
+		const buffer = Buffer.from(encodedAuth, "base64");
+		const [authMail, authPass] = buffer.toString("utf-8").split(':');
+		
+		if (authMail === "Emeric" && authPass === "superP4ss") {
+			return items;
+		}else {
+			return reply
+				.code(403)
+					.send(`Forbiden`);
+		}
+	}else {
+		return reply
+			.code(401)
+				.header("www-authenticate", "Basic")
+				.send(`Unauthorized`);
+	}
 });
 
 fastify.get("/products/:id", async (request, reply) => {
@@ -111,16 +130,31 @@ fastify.patch("/products/:id", async (request, reply) => {
 });
 
 fastify.delete("/products/:id", async (request, reply) => {
+	const auth = request.headers.authorization;
 	const id = parseInt(request.params.id, 10);
 	const itemToRemoveKey = items.findIndex((item) => item.id === id);
-	if(existingPorductKey != -1){
-		items.splice(itemToRemoveKey, 1);
-		return reply
-      .code(204);
+
+	if (auth) {
+		if (auth === "Emeric") {
+			if(itemToRemoveKey != -1){
+				items.splice(itemToRemoveKey, 1);
+				return reply
+					.code(204);
+			}else {
+				return reply
+				.code(404)
+					.send(`Error: no product found`);
+			}
+		}else {
+			return reply
+				.code(403)
+					.send(`Forbiden`);
+		}
 	}else {
 		return reply
-		.code(404)
-			.send(`Error: no product found`);
+			.code(401)
+				.header("www-authenticate", "Basic")
+				.send(`Unauthorized`);
 	}
 });
 
