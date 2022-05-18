@@ -1,6 +1,7 @@
 const fastify = require("fastify")({ logger: true });
 const rateLimit = require('@fastify/rate-limit');
 const helmet = require('@fastify/helmet');
+const authPlugin = require("./authPlugin");
 
 const items = [
   {
@@ -9,6 +10,8 @@ const items = [
     price: 4,
   },
 ];
+
+fastify.register(authPlugin);
 
 fastify.register(rateLimit, {
 	max: 10,
@@ -22,36 +25,11 @@ fastify.register(helmet,{
 // Declare a route
 fastify.get("/", async (request, reply) => {
   const qs = request.query;
-	const remoteAddress = request.ip;
-
-  if (qs.from === "jb") {
-    return `Hello ${qs.from}: here's your secret!`;
-  } else {
-    reply.code(401).send("Unauthorized");
-  }
+	return `hello ${request.user}`;
 });
 
 fastify.get("/products", async (request, reply) => {
-	const authRaw = request.headers.authorization;
-	
-	if (authRaw) {
-		const encodedAuth = authRaw.split(' ').pop();
-		const buffer = Buffer.from(encodedAuth, "base64");
-		const [authMail, authPass] = buffer.toString("utf-8").split(':');
-		
-		if (authMail === "Emeric" && authPass === "superP4ss") {
-			return items;
-		}else {
-			return reply
-				.code(403)
-					.send(`Forbiden`);
-		}
-	}else {
-		return reply
-			.code(401)
-				.header("www-authenticate", "Basic")
-				.send(`Unauthorized`);
-	}
+	return items;
 });
 
 fastify.get("/products/:id", async (request, reply) => {
