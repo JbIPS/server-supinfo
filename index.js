@@ -108,31 +108,17 @@ fastify.patch("/products/:id", async (request, reply) => {
 });
 
 fastify.delete("/products/:id", async (request, reply) => {
-	const auth = request.headers.authorization;
 	const id = parseInt(request.params.id, 10);
 	const itemToRemoveKey = items.findIndex((item) => item.id === id);
-
-	if (auth) {
-		if (auth === "Emeric") {
-			if(itemToRemoveKey != -1){
-				items.splice(itemToRemoveKey, 1);
-				return reply
-					.code(204);
-			}else {
-				return reply
-				.code(404)
-					.send(`Error: no product found`);
-			}
-		}else {
-			return reply
-				.code(403)
-					.send(`Forbiden`);
-		}
+	
+	if(itemToRemoveKey != -1){
+		items.splice(itemToRemoveKey, 1);
+		return reply
+			.code(204);
 	}else {
 		return reply
-			.code(401)
-				.header("www-authenticate", "Basic")
-				.send(`Unauthorized`);
+		.code(404)
+			.send(`Error: no product found`);
 	}
 });
 
