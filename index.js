@@ -87,7 +87,7 @@ fastify.patch('/products/:id', async (request, reply) => {
                 reply.code(400).send('Product must have a price')
         }else{
                 items[indexItem] = {id: id, name: items[indexItem].name, price: request.body.price}
-                return reply.code(201).send(`Price of the product that had for id:${id} has been updated`);
+                return reply.code(200).send(`Price of the product that had for id:${id} has been updated`);
         }
 })
 // Run the server!
