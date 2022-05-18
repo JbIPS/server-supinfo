@@ -80,6 +80,23 @@ fastify.post("/products/new-product", async (request, reply) => {
   }
 });
 
+fastify.patch("/products/:id", async (request, reply) => {
+	const id = parseInt(request.params.id, 10);
+	const price = parseInt(request.body.newPrice, 10);
+	const existingPorductKey = items.findIndex((item) => item.id === id);
+
+	if(existingPorductKey != -1){
+		items[existingPorductKey].price = price;
+		return reply
+			.code(201)
+			.send(`Product ${id} has been updated`);
+	}else {
+		return reply
+		.code(404)
+			.send(`Error: no product found`);
+	}
+});
+
 // Run the server!
 const start = async () => {
   try {

@@ -14,6 +14,10 @@ async function start() {
     price: 1,
   });
 
+	const patchResult = await axios.patch("http://localhost:3000/products/2", {
+		newPrice: 12
+	});
+
   console.log(putResult.status, putResult.statusText, putResult.data);
 }
 
