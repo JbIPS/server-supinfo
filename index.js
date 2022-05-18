@@ -6,6 +6,8 @@ const items = [{
         price: 4
 }]
 
+
+
 // Declare a route
 fastify.get('/', async (request, reply) => {
         const qs = request.query;
@@ -22,7 +24,7 @@ fastify.get('/products', async (request, reply) => {
 
 fastify.get('/products/:id', async (request, reply) => {
         const id = parseInt(request.params.id, 10);
-    const desiredItem = items.find((item) => item.id === 1);
+    const desiredItem = items.find((item) => item.id === id);
         if (desiredItem) {
                 return desiredItem;
         } else {
