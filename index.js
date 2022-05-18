@@ -62,6 +62,24 @@ fastify.put("/products/:id", async (request, reply) => {
   }
 });
 
+fastify.post("/products/new-product", async (request, reply) => {
+	const lastItem = items[items.length - 1];
+  const id = lastItem.id + 1;
+
+  if (!request.body.name || !request.body.price) {
+    reply.code(400).send("Product must have a name and a price");
+  } else {
+		items.push({
+			id: id,
+			name: request.body.name,
+			price: request.body.price,
+		});
+		return reply
+			.code(201)
+			.send(`Product ${request.body.name} has been created`);
+  }
+});
+
 // Run the server!
 const start = async () => {
   try {

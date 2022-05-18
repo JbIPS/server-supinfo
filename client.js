@@ -9,6 +9,11 @@ async function start() {
     price: 4,
   });
 
+	const pushResult = await axios.post("http://localhost:3000/products/new-product", {
+		name: "Stylo",
+    price: 1,
+  });
+
   console.log(putResult.status, putResult.statusText, putResult.data);
 }
 
