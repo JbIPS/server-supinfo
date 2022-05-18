@@ -6,8 +6,9 @@ async function start() {
 
   const putResult = await axios.put("http://localhost:3000/products/2", {
     name: "Règle",
-    price: 2,
+    price: 4,
   });
+
   console.log(putResult.status, putResult.statusText, putResult.data);
 }
 

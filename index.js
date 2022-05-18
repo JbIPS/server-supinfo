@@ -33,18 +33,32 @@ fastify.get("/products/:id", async (request, reply) => {
 });
 
 fastify.put("/products/:id", async (request, reply) => {
-  const id = parseInt(request.params.id, 10);
+  const id = parseInt(request.params.id, 10)
+
   if (!request.body.name || !request.body.price) {
     reply.code(400).send("Product must have a name and a price");
   } else {
-    items.push({
-      id: id,
-      name: request.body.name,
-      price: request.body.price,
-    });
-    return reply
-      .code(201)
-      .send(`Product ${request.body.name} has been created`);
+		const existingPorductKey = items.findIndex((item) => item.id === id);
+
+    if(existingPorductKey != -1){
+      items[existingPorductKey] = {
+				id: id,
+				name: request.body.name,
+				price: request.body.price,
+			}
+			return reply
+				.code(201)
+				.send(`Product ${request.body.name} has been updated`);
+    }else {
+			items.push({
+				id: id,
+				name: request.body.name,
+				price: request.body.price,
+			});
+			return reply
+				.code(201)
+				.send(`Product ${request.body.name} has been created`);
+    }
   }
 });
 
