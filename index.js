@@ -1,18 +1,31 @@
 const fastify = require('fastify')({ logger: true })
+const helmet = require('@fastify/helmet')
+const authPlugin = require("./authPlugin")
 const items = [{
         id: 1,
         name: 'Cartable',
         price: 4
 }]
 
+const users = [{username : "solo", password: "superP4ss"}]
+
+fastify.register(authPlugin,{
+        tableUsers: users
+})
+
+
+fastify.register(helmet,{
+         contentSecurityPolicy: false 
+})
+
+fastify.register(require('@fastify/rate-limit'),{
+        max: 100,
+        timeWindow: '1 minute'
+});
+
 // Declare a route
 fastify.get('/', async (request, reply) => {
-        const qs = request.query;
-        if (qs.from === 'jb') {
-                return `Hello ${qs.from}: here's your secret!`;
-        } else {
-                reply.code(401).send('Unauthorized')
-        }
+        return "hello you're welcome"
 })
 
 fastify.get('/products', async (request, reply) => {
