@@ -97,6 +97,16 @@ fastify.patch("/products/:id", async (request, reply) => {
 	}
 });
 
+fastify.delete("/products/:id", async (request, reply) => {
+	const id = parseInt(request.params.id, 10);
+	const itemToRemoveKey = items.findIndex((item) => item.id === id);
+	items.splice(itemToRemoveKey, 1);
+
+	return reply
+      .code(201)
+      .send(`Product ${id} has been deleted`);
+});
+
 // Run the server!
 const start = async () => {
   try {

@@ -18,6 +18,8 @@ async function start() {
 		newPrice: 12
 	});
 
+	// const deleteResult = await axios.delete("http://localhost:3000/products/2");
+
   console.log(putResult.status, putResult.statusText, putResult.data);
 }
 
