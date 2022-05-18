@@ -1,4 +1,6 @@
 const fastify = require("fastify")({ logger: true });
+const rateLimit = require('@fastify/rate-limit');
+const helmet = require('@fastify/helmet');
 
 const items = [
   {
@@ -8,9 +10,20 @@ const items = [
   },
 ];
 
+fastify.register(rateLimit, {
+	max: 1,
+	timeWindow: '1 minute'
+});
+
+fastify.register(helmet,{ 
+	contentSecurityPolicy: false 
+});
+
 // Declare a route
 fastify.get("/", async (request, reply) => {
   const qs = request.query;
+	const remoteAddress = request.ip;
+
   if (qs.from === "jb") {
     return `Hello ${qs.from}: here's your secret!`;
   } else {
