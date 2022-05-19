@@ -8,27 +8,28 @@ const items = [{
 
 // Declare a route
 fastify.get('/', async (request, reply) => {
-        const qs = request.query;
-        if (qs.from === 'jb') {
-                return `Hello ${qs.from}: here's your secret!`;
-        } else {
-                reply.code(401).send('Unauthorized')
-        }
-})
+   const qs = request.query;
+        if (qs.from === 'jb') { return `Hello ${qs.from}: here's your secret!`;} 
+
+        else {reply.code(401).send('Unauthorized') }})
+
+
 
 fastify.get('/products', async (request, reply) => {
-        return items;
+                return items;
 })
 
 fastify.get('/products/:id', async (request, reply) => {
         const id = parseInt(request.params.id, 10);
         const desiredItem = items.find((item) => item.id === id);
-        if (desiredItem) {
-                return desiredItem;
-        } else {
+                if (desiredItem) {
+                        return desiredItem;
+                } else {
                 reply.code(404).send('not found');
         }
 });
+
+
 
 //- [] Corriger la route `PUT /products/:id` pour qu'elle remplace un produit existant//
 
@@ -38,20 +39,21 @@ fastify.put('/products/:id', async (request, reply) => {
         const indexItem = items.findIndex((item) => item.id === id);
 
 
-        if (!request.body.name || !request.body.price) {
+                 if (!request.body.name || !request.body.price) {
                 reply.code(400).send('Product must have a name and a price')
-        } else {
-                if(desiredItem){
-                        items[indexItem] = {id: id, name: request.body.name, price: request.body.price}
-                        return reply.code(201).send(`Product ${request.body.name} has been created`);
-                }
-                else{ 
+                }else {
+
+                 if(desiredItem){
+                items[indexItem] = {id: id, name: request.body.name, price: request.body.price}
+                         return reply.code(201).send(`Product ${request.body.name} has been created`);
+                                                                                                }
+                  else{ 
                 items.push({
                         id: id,
                         name: request.body.name,
                         price: request.body.price
                 });
-                return reply.code(201).send(`Product ${request.body.name} has been created`);
+                        return reply.code(201).send(`Product ${request.body.name} has been created`);
         }
         }
 })
@@ -97,9 +99,9 @@ fastify.delete('/products/delete/:id', async (request, reply) => {
 //- [] Créer une route permettant de changer le prix d'un produit (sans l'écraser)//
 
 fastify.patch('/products/patch/:id', async (request, reply) => {
-        const id = parseInt(request.params.id, 10);
-        const desiredItem = items.find((item) => item.id === id);
-        const indexItem = items.findIndex((item) => item.id === id);
+  const id = parseInt(request.params.id, 10);
+  const desiredItem = items.find((item) => item.id === id);
+  const indexItem = items.findIndex((item) => item.id === id);
 
         if (!request.body.price) {
                 reply.code(400).send('Product must have a price')
