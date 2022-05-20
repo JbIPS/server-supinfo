@@ -5,12 +5,15 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node index.js"
+    "start": "nodemon index.js"
   },
   "author": "",
   "license": "MIT",
   "dependencies": {
     "axios": "^0.27.2",
     "fastify": "^3.29.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.16"
   }
 }
