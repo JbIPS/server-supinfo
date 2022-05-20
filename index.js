@@ -57,7 +57,7 @@ fastify.delete('/products/:id', (request, reply) => {
 
 // Update product
 
-fastify.put('/products/:id', (request, reply) => {
+fastify.patch('/products/:id', (request, reply) => {
         const id = Number(request.params.id)
         const index = products.findIndex(product => product.id === id)
         if (index === -1) {
