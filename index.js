@@ -39,8 +39,12 @@ fastify.post('/products/add', (request, reply) => {
                 name: request.body.name,
                 price: request.body.price
         }
-        products.push(newProduct)
-        reply.status(201).json(newProduct)
+        if (!request.body.name || !request.body.price) {
+                reply.code(400).send('The product must have a name and a price in the body')
+        } else {
+                products.push(newProduct)
+                reply.status(201).json(newProduct)
+        }
 })
 
 // Delete the product
@@ -60,7 +64,7 @@ fastify.delete('/products/delete/:id', (request, reply) => {
 fastify.put('/products/:id', (request, reply) => {
         const id = Number(request.params.id)
         const index = products.findIndex(product => product.id === id)
-        if (index === -1) {
+        if (index === -1 || !request.body.price) {
                 return reply.status(404).send('Product not found')
         }
         const updatedProduct = {
