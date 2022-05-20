@@ -49,8 +49,8 @@ fastify.post('/products/add', (request, reply) => {
 
 // Delete the product
 
-fastify.delete('/products/delete/:id', (request, reply) => {
-        const id = Number(request.params.id)
+fastify.delete('/products/:id', (request, reply) => {
+        const id = parseInt(request.params.id, 10);
         const index = products.findIndex(product => product.id === id)
         if (index === -1) {
                 return reply.status(404).send('Product not found')
@@ -61,8 +61,8 @@ fastify.delete('/products/delete/:id', (request, reply) => {
 
 // Update product
 
-fastify.put('/products/:id', (request, reply) => {
-        const id = Number(request.params.id)
+fastify.patch('/products/:id', (request, reply) => {
+        const id = parseInt(request.params.id, 10)
         const index = products.findIndex(product => product.id === id)
         if (index === -1 || !request.body.price) {
                 return reply.status(404).send('Product not found')
@@ -73,7 +73,7 @@ fastify.put('/products/:id', (request, reply) => {
                 price: request.body.price
         }
         products[index] = updatedProduct
-        reply.status(200).json('Product updated')
+        reply.status(200).send('Product updated')
 })
 
 // Run the server!
