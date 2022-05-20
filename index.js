@@ -45,7 +45,7 @@ fastify.post('/products/add', (request, reply) => {
 
 // Delete the product
 
-fastify.delete('/products/delete/:id', (request, reply) => {
+fastify.delete('/products/:id', (request, reply) => {
         const id = Number(request.params.id)
         const index = products.findIndex(product => product.id === id)
         if (index === -1) {
