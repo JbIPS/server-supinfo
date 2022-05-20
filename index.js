@@ -69,7 +69,7 @@ fastify.patch('/products/:id', (request, reply) => {
                 price: request.body.price
         }
         products[index] = updatedProduct
-        reply.status(200).json('Product updated')
+        reply.status(200).send('Product updated')
 })
 
 // Run the server!
