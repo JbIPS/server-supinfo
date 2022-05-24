@@ -1,23 +1,20 @@
 const fastify = require('fastify')({ logger: true })
-
 const items = [{
         id: 1,
         name: 'Cartable',
         price: 4
 }]
 
-// Declare a route
-fastify.get('/', async (request, reply) => {
-        const qs = request.query;
-        if (qs.from === 'jb') {
-                return `Hello ${qs.from}: here's your secret!`;
-        } else {
-                reply.code(401).send('Unauthorized')
-        }
-})
+fastify.register(require('@fastify/rate-limit'),{
+        max: 1,
+        timeWindow: '1s'
+});
 
 fastify.get('/products', async (request, reply) => {
         return items;
+})
+fastify.get('/', async (request, reply) => {
+        return "cc"
 })
 
 fastify.get('/products/:id', async (request, reply) => {
@@ -32,19 +29,66 @@ fastify.get('/products/:id', async (request, reply) => {
 
 fastify.put('/products/:id', async (request, reply) => {
         const id = parseInt(request.params.id, 10);
+        const indexItem = items.findIndex((item) => item.id === id);
+
         if (!request.body.name || !request.body.price) {
                 reply.code(400).send('Product must have a name and a price')
         } else {
-                items.push({
-                        id: id,
-                        name: request.body.name,
-                        price: request.body.price
-                });
-                return reply.code(201).send(`Product ${request.body.name} has been created`);
+                if (indexItem !== -1) {
+                        items[indexItem] = {id: id, name: request.body.name, price: request.body.price}
+                        return reply.code(200).send(`Product ${request.body.name} has been updated`);
+
+                } else {
+                        items.push({
+                                id: id,
+                                name: request.body.name,
+                                price: request.body.price
+                        });
+                        return reply.code(201).send(`Product ${request.body.name} has been created`);
+                }
+
         }
 })
 
-// Run the server!
+fastify.post('/products/add', async (request, reply) => {
+
+        if (!request.body.name || !request.body.price) {
+                reply.code(400).send('Product must have a name and a price');
+        } else {
+                const idToAdd = Math.max(...items.map(o => o.id)) + 1;
+                items.push({
+                        id: idToAdd,
+                        name: request.body.name,
+                        price: request.body.price
+                });
+                return reply.code(201).send(`Product ${request.body.name} has been created and the id wanted is  ${idToAdd}`);
+        }
+})
+
+fastify.delete('/products/:id', async (request, reply) => {
+        const id = parseInt(request.params.id, 10);
+        const indexItem = items.findIndex((item) => item.id === id);
+
+        if (indexItem !== -1) {
+                items.splice(indexItem,1)
+                return reply.code(204);
+        } else {
+                reply.code(404).send('id not found');
+        }
+})
+
+fastify.patch('/products/:id', async (request, reply) => {
+        const id = parseInt(request.params.id, 10);
+        const indexItem = items.findIndex((item) => item.id === id);
+
+        if (!request.body.price) {
+                reply.code(400).send('Product must have a price')
+        }else{
+                items[indexItem] = {id: id, name: items[indexItem].name, price: request.body.price}
+                return reply.code(200).send(`Price of the product that had for id:${id} has been updated`);
+        }
+})
+
 const start = async () => {
         try {
                 await fastify.listen(3000, '0.0.0.0')
